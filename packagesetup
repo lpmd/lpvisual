@@ -1,0 +1,50 @@
+#
+#
+#
+
+name = lpvisual
+fullname = 'LPVisual'
+version = 0.6.4
+author = 'GNM <gnm@gnm.cl>'
+prefix = /usr/local
+
+language c++
+ifdef intel
+   compiler = icpc
+   linker = icpc
+   flags = -Wall -O3 -axSSE4.1 -parallel -diag-disable remark -finline-functions -DNDEBUG  -fPIC  -lpthread -lguide -lmkl
+   ifdef openmp
+    openmpflags = -openmp
+   endif
+   ifdef ati
+    libraries = -lm -lGL -lGLU -lglut -lX11 -L/usr/lib/fglrx
+   else
+    libraries = -lm -lGL -lGLU -lglut -lX11 
+   endif
+else
+   compiler = g++
+   linker = g++
+   flags = -Wall -O3 -ffast-math -funroll-all-loops -finline-functions -std=gnu++98
+   ifdef openmp
+    openmpflags = -fopenmp
+   endif
+   ifdef ati
+    libraries = -lm -lGL -lGLU -lglut -lX11 -L/usr/lib/fglrx
+   else
+#     libraries = -lm -lGL -lGLU -lglut -lX11
+    libraries = -framework Carbon -framework OpenGL -framework GLUT -Wno-deprecated
+   endif
+endif
+end
+
+directory .
+
+    module lpvisual.so
+       language = c++
+       sources = display.cc lpvisual.cc
+       installpath = lib/lpmd
+       pkgconfig += liblpmd-2.0
+    end
+
+end
+
